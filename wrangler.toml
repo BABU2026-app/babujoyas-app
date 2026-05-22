@@ -1,0 +1,6 @@
+name = "babujoyas-app"
+compatibility_date = "2026-05-18"
+pages_build_output_dir = "."
+
+# Las variables sensibles (PS_WS_KEY) se configuran como SECRETS en el dashboard de
+# Cloudflare Pages → Settings → Variables and Secrets. Nunca aquí.
