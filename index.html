@@ -285,7 +285,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── CONFIG ──
-const API = '/.netlify/functions/products';
+const API = 'https://babujoyas.com/api/products?output_format=JSON&display=full&filter[active]=[1]&ws_key=J1QISR97EIJ3LQRZRB8FP9SDWZN1TIKY';
 const CART_API = '/api/cart';
 const CATS = [
   {l:'Todo', id:0},
@@ -532,9 +532,9 @@ async function loadProducts() {
   document.getElementById('home-grid').innerHTML=sk(6);
   document.getElementById('catalog-grid').innerHTML=sk(12);
   try {
-    const r = await fetch(API+'?limit=200&t='+Date.now());
+    const r = await fetch(API+'&limit=200&t='+Date.now());
     const d = await r.json();
-    all = d.products || [];
+    all = (d.products || []).map(mapProduct);
     console.log('Productos cargados:', all.length);
     renderGrid('home-grid', all.slice(0,6));
     renderGrid('catalog-grid', all);
@@ -545,7 +545,29 @@ async function loadProducts() {
     document.getElementById('home-grid').innerHTML='<div style="padding:20px;color:var(--text-dim);grid-column:1/-1;text-align:center">Error cargando productos</div>';
   }
 }
+function mapProduct(p) {
+  const BASE = 'https://babujoyas.com';
+  const imgId = p.id_default_image;
+  let image = null;
+  if (imgId) {
+    const digits = String(imgId).split('').join('/');
+    image = `${BASE}/img/p/${digits}/${imgId}.jpg`;
+  }
+  const priceVAT = (parseFloat(p.price || 0) * 1.21).toFixed(2).replace('.', ',') + ' €';
+  const linkRewrite = pickEs(p.link_rewrite);
+  const url = linkRewrite ? `${BASE}/es/${linkRewrite}` : `${BASE}/es/index.php?id_product=${p.id}&controller=product`;
+  let cats = [];
+  if (p.associations?.categories?.length) cats = p.associations.categories.map(c => parseInt(c.id)).filter(id => id > 2);
+  if (!cats.length) cats = [parseInt(p.id_category_default) || 2];
+  return { id: parseInt(p.id), name: pickEs(p.name), price: priceVAT, image, reference: p.reference || '', description: pickEs(p.description_short).replace(/<[^>]+>/g,'').trim().substring(0,200), categoryId: parseInt(p.id_category_default), categories: cats, url };
+}
 
+function pickEs(field) {
+  if (!field) return '';
+  if (typeof field === 'string') return field;
+  if (Array.isArray(field)) { const es = field.find(n => n.iso_code === 'es'); return (es || field[0] || {}).value || ''; }
+  return String(field);
+}
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
