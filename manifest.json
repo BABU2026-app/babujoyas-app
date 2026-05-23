@@ -2,7 +2,7 @@
   "name": "Babu Joyas",
   "short_name": "Babu Joyas",
   "description": "Joyería artesanal de plata 925, oro 18k y acero waterproof. Desde Córdoba para el mundo.",
-  "start_url": "/",
+  "start_url": "/babujoyas-app/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
