@@ -535,7 +535,7 @@ async function loadProducts() {
   try {
    const r = await fetch(API+'?limit=200&t='+Date.now());
     const d = await r.json();
-    all = (d.products || []).map(mapProduct);
+    all = d.products || [];
     console.log('Productos cargados:', all.length);
     renderGrid('home-grid', all.slice(0,6));
     renderGrid('catalog-grid', all);
