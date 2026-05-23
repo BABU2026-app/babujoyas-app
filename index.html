@@ -280,7 +280,7 @@ function sk(n) {
 
 function card(p) {
   const fav = favs.includes(p.id);
-  return `<div class="card" onclick="window.open('${p.url || 'https://babujoyas.com'}','_blank')">
+  return `<div class="card" onclick="openDetail(${p.id})">
     <img src="${p.image||''}" alt="${p.name}" loading="lazy" onerror="this.style.minHeight='200px'"/>
     <div class="cinfo">
       <div class="cref">${p.reference||''}</div>
