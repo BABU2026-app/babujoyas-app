@@ -532,7 +532,7 @@ async function loadProducts() {
   document.getElementById('home-grid').innerHTML=sk(6);
   document.getElementById('catalog-grid').innerHTML=sk(12);
   try {
-    const r = await fetch(API+'&limit=200&t='+Date.now());
+   const r = await fetch(API+'?limit=200&t='+Date.now());
     const d = await r.json();
     all = (d.products || []).map(mapProduct);
     console.log('Productos cargados:', all.length);
