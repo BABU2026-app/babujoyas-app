@@ -289,14 +289,14 @@ if ('serviceWorker' in navigator) {
 const API = 'https://babu-proxy.ventas-01f.workers.dev';
 const CART_API = '/api/cart';
 const CATS = [
-  {l:'Todo', id:0},
-  {l:'Pendientes', id:1260},
-  {l:'Anillos', id:1261},
-  {l:'Pulseras', id:1262},
-  {l:'Gargantillas', id:1263},
-  {l:'Colgantes', id:1265},
-  {l:'Religiosa', id:1259},
-  {l:'Personalizados', id:1249},
+{l:'Todo', id:0},
+  {l:'Pendientes', id:1260, sub:[1270,1269,1271]},
+  {l:'Anillos', id:1261, sub:[1275,1276,1277]},
+  {l:'Pulseras', id:1262, sub:[1278,1279,1280]},
+  {l:'Gargantillas', id:1263, sub:[1273,1272,1274]},
+  {l:'Colgantes', id:1265, sub:[1282,1281,1283]},
+  {l:'Religiosa', id:1259, sub:[1266,1267,1268]},
+  {l:'Personalizados', id:1249, sub:[1250,1251,1253,1255]},
 ];
 
 // ── STATE ──
@@ -347,11 +347,27 @@ function renderCats(id, gridId) {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = CATS.map((c,i) =>
+    `<button class="cat ${i===0?'active':''}" onclick="filterCat(this,'${gridId}',${c.id},${JSON.stringify(c.sub||[])})">${c.l}</button>`
+  ).join('');
+}
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = CATS.map((c,i) =>
     `<button class="cat ${i===0?'active':''}" onclick="filterCat(this,'${gridId}',${c.id})">${c.l}</button>`
   ).join('');
 }
 
-function filterCat(btn, gridId, catId) {
+function filterCat(btn, gridId, catId, sub) {
+  btn.closest('.cats').querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if (catId === 0) { renderGrid(gridId, all); return; }
+  const ids = [catId, ...(sub||[])];
+  const filtered = all.filter(p => {
+    if (p.categories && p.categories.length > 0) return p.categories.some(c => ids.includes(c));
+    return ids.includes(parseInt(p.categoryId));
+  });
+  renderGrid(gridId, filtered.length ? filtered : []);
+}
   btn.closest('.cats').querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   if (catId === 0) { renderGrid(gridId, all); return; }
