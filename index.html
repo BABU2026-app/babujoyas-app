@@ -545,6 +545,37 @@ function toast(m) {
   setTimeout(()=>t.classList.remove('show'),2000);
 }
 
+
+  const btn = document.getElementById('checkout-btn');
+  const msg = document.getElementById('checkout-msg');
+  btn.disabled = true;
+  btn.textContent = 'Preparando...';
+  msg.style.display = 'block';
+async function syncCartAndCheckout() {
+  try {
+    const items = cart.map(x => ({ id: x.id, qty: x.qty }));
+    const res = await fetch('https://babu-proxy.ventas-01f.workers.dev/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items })
+    });
+    const data = await res.json();
+
+    if (data.checkoutUrl) {
+      window.open(data.checkoutUrl, '_blank');
+    } else {
+      window.open('https://babujoyas.com/carrito?action=show', '_blank');
+    }
+  } catch(e) {
+    window.open('https://babujoyas.com', '_blank');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Finalizar compra';
+    msg.style.display = 'none';
+  }
+}
+}
+
 async function syncCartAndCheckout() {
   const btn = document.getElementById('checkout-btn');
   const msg = document.getElementById('checkout-msg');
@@ -574,33 +605,3 @@ async function syncCartAndCheckout() {
     msg.style.display = 'none';
   }
 }
-}
-
-async function loadProducts() {
-  document.getElementById('home-grid').innerHTML=sk(6);
-  document.getElementById('catalog-grid').innerHTML=sk(12);
-  try {
-    const r = await fetch(API+'?limit=200&t='+Date.now());
-    const d = await r.json();
-    all = d.products || [];
-    console.log('Productos cargados:', all.length);
-    renderGrid('home-grid', all.slice(0,6));
-    renderGrid('catalog-grid', all);
-    renderCats('home-cats','home-grid');
-    renderCats('catalog-cats','catalog-grid');
-  } catch(e) {
-    console.error('Error:', e);
-    document.getElementById('home-grid').innerHTML='<div style="padding:20px;color:var(--text-dim);grid-column:1/-1;text-align:center">Error cargando productos</div>';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
-  updateBadge();
-  renderCats('home-cats','home-grid');
-  renderCats('catalog-cats','catalog-grid');
-  loadProducts();
-});
-</script>
-</body>
-</html>
