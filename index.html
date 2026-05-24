@@ -26,7 +26,126 @@
     #splash .logo { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:300; letter-spacing:0.18em; color:var(--gold); }
     #splash .bar { width:60px; height:1px; background:var(--gold); }
     #splash .sub { font-size:0.6rem; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; }
-    header { position:fixed; top:env(safe-area-inset-top); left:0; right:0; z-index:100; height:60px; background:rgba(10,10,10,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+    header { position:fixed; top:env(safe-area-inset-top); left:0; right:0; z-index:100; height:60px; background:rgba(10,10,10,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; }const WS_KEY = 'J1QISR97EIJ3LQRZRB8FP9SDWZN1TIKY';
+const BASE = 'https://babujoyas.com';
+
+export default {
+  async fetch(request) {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response('', { headers: corsHeaders });
+    }
+
+    const url = new URL(request.url);
+
+    // POST /cart → crear carrito en PrestaShop
+    if (request.method === 'POST' && url.pathname === '/cart') {
+      try {
+        const body = await request.json();
+        const items = body.items || [];
+
+        // 1. Crear carrito vacío
+        const cartXml = `<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+  <cart>
+    <id_currency>1</id_currency>
+    <id_lang>1</id_lang>
+    <id_shop>1</id_shop>
+  </cart>
+</prestashop>`;
+
+        const cartRes = await fetch(`${BASE}/api/carts?ws_key=${WS_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/xml', 'Accept': 'application/xml' },
+          body: cartXml
+        });
+
+        const cartText = await cartRes.text();
+        const cartIdMatch = cartText.match(/<id>(\d+)<\/id>/);
+        if (!cartIdMatch) throw new Error('No se pudo crear el carrito');
+        const cartId = cartIdMatch[1];
+
+        // 2. Añadir productos al carrito
+        for (const item of items) {
+          const rowXml = `<?xml version="1.0" encoding="UTF-8"?>
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+  <cart>
+    <id>${cartId}</id>
+    <id_currency>1</id_currency>
+    <id_lang>1</id_lang>
+    <id_shop>1</id_shop>
+    <associations>
+      <cart_rows>
+        <cart_row>
+          <id_product>${item.id}</id_product>
+          <id_product_attribute>0</id_product_attribute>
+          <id_address_delivery>0</id_address_delivery>
+          <quantity>${item.qty}</quantity>
+        </cart_row>
+      </cart_rows>
+    </associations>
+  </cart>
+</prestashop>`;
+
+          await fetch(`${BASE}/api/carts/${cartId}?ws_key=${WS_KEY}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/xml', 'Accept': 'application/xml' },
+            body: rowXml
+          });
+        }
+
+        const checkoutUrl = `${BASE}/es/index.php?controller=order&id_cart=${cartId}&token=checkout`;
+        return new Response(JSON.stringify({ checkoutUrl, cartId }), { headers: corsHeaders });
+
+      } catch(err) {
+        return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // GET → productos
+    const limit = url.searchParams.get('limit') || '200';
+    const psUrl = `${BASE}/api/products?output_format=JSON&display=full&limit=${limit}&filter[active]=[1]&ws_key=${WS_KEY}`;
+
+    const psRes = await fetch(psUrl, {
+      headers: { 'User-Agent': 'BabuJoyas-PWA/1.0', 'Accept': 'application/json' }
+    });
+
+    if (!psRes.ok) {
+      return new Response(JSON.stringify({ error: `PS ${psRes.status}`, products: [] }), { status: 502, headers: corsHeaders });
+    }
+
+    const data = await psRes.json();
+    const products = (data.products || []).map(p => {
+      const imgId = p.id_default_image;
+      const image = imgId ? `${BASE}/img/p/${String(imgId).split('').join('/')}/${imgId}.jpg` : null;
+      const price = (parseFloat(p.price || 0) * 1.21).toFixed(2).replace('.', ',') + ' €';
+      const name = Array.isArray(p.name) ? (p.name.find(n => n.iso_code === 'es') || p.name[0] || {}).value : p.name;
+      const link = Array.isArray(p.link_rewrite) ? (p.link_rewrite.find(n => n.iso_code === 'es') || p.link_rewrite[0] || {}).value : p.link_rewrite;
+      const url2 = link ? `${BASE}/es/${link}` : `${BASE}/es/index.php?id_product=${p.id}&controller=product`;
+      const desc = Array.isArray(p.description_short) ? (p.description_short.find(n => n.iso_code === 'es') || p.description_short[0] || {}).value : p.description_short;
+      let cats = [];
+      if (p.associations?.categories?.length) cats = p.associations.categories.map(c => parseInt(c.id)).filter(id => id > 2);
+      if (!cats.length) cats = [parseInt(p.id_category_default) || 2];
+      return {
+        id: parseInt(p.id),
+        name: name || '',
+        price,
+        image,
+        reference: p.reference || '',
+        description: (desc || '').replace(/<[^>]+>/g, '').trim().substring(0, 200),
+        categoryId: parseInt(p.id_category_default),
+        categories: cats,
+        url: url2,
+      };
+    });
+
+    return new Response(JSON.stringify({ products, total: products.length }), { headers: corsHeaders });
+  }
+};
     .logo-h { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; letter-spacing:0.14em; color:var(--gold); }
     .hicons { display:flex; gap:18px; }
     .hicons button { background:none; border:none; cursor:pointer; color:var(--text-dim); transition:color 0.2s; }
@@ -432,8 +551,21 @@ async function syncCartAndCheckout() {
   btn.disabled = true;
   btn.textContent = 'Preparando...';
   msg.style.display = 'block';
+
   try {
-  window.open('https://babujoyas.com/carrito?action=show', '_blank');
+    const items = cart.map(x => ({ id: x.id, qty: x.qty }));
+    const res = await fetch('https://babu-proxy.ventas-01f.workers.dev/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items })
+    });
+    const data = await res.json();
+
+    if (data.checkoutUrl) {
+      window.open(data.checkoutUrl, '_blank');
+    } else {
+      window.open('https://babujoyas.com/carrito?action=show', '_blank');
+    }
   } catch(e) {
     window.open('https://babujoyas.com', '_blank');
   } finally {
@@ -441,6 +573,7 @@ async function syncCartAndCheckout() {
     btn.textContent = 'Finalizar compra';
     msg.style.display = 'none';
   }
+}
 }
 
 async function loadProducts() {
