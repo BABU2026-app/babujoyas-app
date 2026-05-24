@@ -439,9 +439,9 @@ async function syncCartAndCheckout() {
     });
     const data = await res.json();
     if (data.checkoutUrl) {
-      window.open(data.checkoutUrl, '_blank');
+      window.location.href = data.checkoutUrl;
     } else {
-      window.open('https://babujoyas.com/carrito?action=show', '_blank');
+      window.location.href = 'https://babujoyas.com/carrito?action=show';
     }
   } catch(e) {
     window.open('https://babujoyas.com', '_blank');
