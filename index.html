@@ -440,6 +440,9 @@ async function syncCartAndCheckout() {
     const data = await res.json();
     if (data.checkoutUrl) {
       window.location.href = data.checkoutUrl;
+      cart = [];
+localStorage.setItem('bj_c', '[]');
+updateBadge();
     } else {
       window.location.href = 'https://babujoyas.com/carrito?action=show';
     }
