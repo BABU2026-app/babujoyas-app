@@ -175,7 +175,20 @@
       <span style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim)">Total</span>
       <span id="cart-total" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold)">0,00 €</span>
     </div>
-    <button id="checkout-btn" class="btn1" onclick="syncCartAndCheckout()">Finalizar compra</button>
+    <button id="checkout-btn" class="btn1" onclick="async function syncCartAndCheckout() {
+  const btn = document.getElementById('checkout-btn');
+  btn.disabled = true;
+  btn.textContent = 'Preparando...';
+  
+  const ids = cart.map(x => x.id).join(',');
+  const checkoutUrl = 'https://babujoyas.com/carrito?add=' + ids;
+  
+  cart = [];
+  localStorage.setItem('bj_c', '[]');
+  updateBadge();
+  
+  window.location.href = checkoutUrl;
+}()">Finalizar compra</button>
     <div id="checkout-msg" style="display:none;text-align:center;padding-top:12px;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)">Conectando con la tienda…</div>
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
       <div style="font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Pagos · Envíos</div>
