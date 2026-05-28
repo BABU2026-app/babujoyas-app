@@ -438,6 +438,7 @@ async function syncCartAndCheckout() {
       body: JSON.stringify({ items })
     });
     const data = await res.json();
+    console.log('Worker response:', data);
     if (data.checkoutUrl) {
       window.location.href = data.checkoutUrl;
       cart = [];
