@@ -445,7 +445,8 @@ async function syncCartAndCheckout() {
 localStorage.setItem('bj_c', '[]');
 updateBadge();
     } else {
-      window.location.href = 'https://babujoyas.com/carrito?action=show';
+      const ids = cart.map(x => x.id).join(',');
+window.location.href = 'https://babujoyas.com/carrito?add=' + ids;
     }
   } catch(e) {
     window.open('https://babujoyas.com', '_blank');
