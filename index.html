@@ -431,9 +431,11 @@ async function syncCartAndCheckout() {
   msg.style.display = 'block';
   try {
     const ids = cart.map(x => x.id).join(',');
-    window.open('https://babujoyas.com/carrito?add=' + ids, '_blank');
     cart = [];
     localStorage.setItem('bj_c', '[]');
+    updateBadge();
+    renderCart();
+    window.open('https://babujoyas.com/carrito?add=' + ids, '_blank');
     updateBadge();
   } catch(e) {
     window.open('https://babujoyas.com', '_blank');
