@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="referrer" content="no-referrer"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <meta name="theme-color" content="#0a0a0a"/>
   <meta name="mobile-web-app-capable" content="yes"/>
@@ -20,48 +21,32 @@
     }
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html,body { background:var(--black); color:var(--text); font-family:'Montserrat',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; }
-
-    /* SPLASH */
     #splash { position:fixed; inset:0; z-index:999; background:var(--black); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; transition:opacity 0.6s; }
     #splash.hide { opacity:0; pointer-events:none; }
     #splash .logo { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:300; letter-spacing:0.18em; color:var(--gold); }
     #splash .bar { width:60px; height:1px; background:var(--gold); }
     #splash .sub { font-size:0.6rem; letter-spacing:0.3em; color:var(--text-dim); text-transform:uppercase; }
-
-    /* HEADER */
-    header { position:fixed; top:0; left:0; right:0; z-index:100; height:60px; background:rgba(10,10,10,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
+    header { position:fixed; top:env(safe-area-inset-top); left:0; right:0; z-index:100; height:60px; background:rgba(10,10,10,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 20px; }
     .logo-h { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; letter-spacing:0.14em; color:var(--gold); }
     .hicons { display:flex; gap:18px; }
     .hicons button { background:none; border:none; cursor:pointer; color:var(--text-dim); transition:color 0.2s; }
     .hicons button:hover { color:var(--gold); }
-
-    /* BOTTOM NAV */
     nav { position:fixed; bottom:0; left:0; right:0; z-index:100; height:60px; background:rgba(10,10,10,0.97); backdrop-filter:blur(12px); border-top:1px solid var(--border); display:flex; }
     nav button { flex:1; background:none; border:none; cursor:pointer; color:var(--text-dim); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; font-family:'Montserrat',sans-serif; transition:color 0.2s; }
     nav button.active { color:var(--gold); }
-
-    /* PAGES */
     .page { display:none; padding:70px 0 70px; min-height:100vh; }
     .page.active { display:block; }
-
-    /* HERO */
     .hero { padding:32px 20px 28px; border-bottom:1px solid var(--border); }
     .hero-eye { font-size:0.6rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
     .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,8vw,3rem); font-weight:300; line-height:1.1; color:var(--text); }
     .hero-title em { color:var(--gold); font-style:italic; }
     .hero-cta { margin-top:18px; display:inline-flex; align-items:center; gap:8px; background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; padding:10px 20px; border:none; cursor:pointer; font-family:'Montserrat',sans-serif; }
-
-    /* SECTION */
     .slabel { font-size:0.6rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); padding:24px 20px 8px; }
     .stitle { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; padding:0 20px 16px; }
-
-    /* CATS */
     .cats { display:flex; gap:8px; overflow-x:auto; padding:0 20px 8px; scrollbar-width:none; }
     .cats::-webkit-scrollbar { display:none; }
     .cat { flex-shrink:0; padding:7px 14px; border:1px solid var(--border); font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); background:none; cursor:pointer; font-family:'Montserrat',sans-serif; white-space:nowrap; transition:all 0.2s; }
     .cat.active,.cat:hover { border-color:var(--gold); color:var(--gold); }
-
-    /* GRID */
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:8px; }
     .card { background:var(--dark); cursor:pointer; position:relative; overflow:hidden; }
     .card img { width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--dark2); transition:transform 0.4s; }
@@ -72,16 +57,12 @@
     .crow { display:flex; align-items:center; justify-content:space-between; }
     .cprice { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--gold); }
     .fav-btn { background:none; border:none; cursor:pointer; padding:4px; }
-
-    /* SKELETON */
     .skel { background:linear-gradient(90deg,var(--dark2) 25%,var(--dark3) 50%,var(--dark2) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
     @keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
     .skel-img { aspect-ratio:1; }
     .skel-line { height:10px; margin:8px 12px 4px; border-radius:2px; }
     .skel-line.s { width:50%; }
     .skel-line.p { width:35%; height:13px; margin-top:8px; }
-
-    /* DETAIL */
     #detail { position:fixed; inset:0; z-index:200; background:var(--black); overflow-y:auto; transform:translateX(100%); transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); }
     #detail.open { transform:translateX(0); }
     .dback { position:sticky; top:0; z-index:1; height:52px; background:rgba(10,10,10,0.95); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; }
@@ -94,32 +75,20 @@
     .ddesc { font-size:0.75rem; line-height:1.8; color:var(--text-dim); margin-bottom:24px; }
     .btn1 { width:100%; padding:15px; background:var(--gold); color:var(--black); border:none; cursor:pointer; font-family:'Montserrat',sans-serif; font-size:0.65rem; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:10px; }
     .btn2 { width:100%; padding:13px; background:transparent; color:var(--gold); border:1px solid var(--gold); cursor:pointer; font-family:'Montserrat',sans-serif; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; }
-
-    /* SEARCH */
     .sinput { display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); margin:0 20px 20px; padding-bottom:12px; }
     .sinput input { flex:1; background:none; border:none; outline:none; color:var(--text); font-family:'Cormorant Garamond',serif; font-size:1.2rem; }
     .sinput input::placeholder { color:var(--text-dim); }
-
-    /* EMPTY */
     .empty { text-align:center; padding:60px 20px; }
     .empty svg { color:var(--gold-dim); margin-bottom:14px; }
     .empty p { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--text-dim); margin-bottom:6px; }
     .empty small { font-size:0.65rem; color:var(--text-dim); }
-
-    /* CART ITEM */
     .cart-item { display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--border); align-items:center; }
     .cart-item img { width:60px; height:60px; object-fit:cover; background:var(--dark2); flex-shrink:0; }
-
-    /* TOAST */
-    #toast { position:fixed; bottom:75px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; padding:9px 18px; z-index:300; opacity:0; transition:all 0.3s; pointer-events:none; white-space:nowrap; }
+    #toast { position:fixed; bottom:calc(90px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%) translateY(16px); background:var(--gold); color:var(--black); font-size:0.6rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; padding:9px 18px; z-index:300; opacity:0; transition:all 0.3s; pointer-events:none; white-space:nowrap; }
     #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-    /* BADGE */
     .cbadge { position:absolute; top:8px; left:8px; background:var(--gold); color:var(--black); font-size:0.45rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; padding:2px 6px; }
     .ccount { position:absolute; top:-3px; right:-7px; width:15px; height:15px; border-radius:50%; background:var(--gold); color:var(--black); font-size:0.45rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
     .cicon { position:relative; display:inline-flex; }
-
-    /* PROFILE */
     .prow { display:flex; align-items:center; gap:14px; padding:20px; border-bottom:1px solid var(--border); }
     .pavatar { width:52px; height:52px; border-radius:50%; border:1px solid var(--gold); display:flex; align-items:center; justify-content:center; color:var(--gold); }
     .mitem { display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border); cursor:pointer; font-size:0.75rem; color:var(--text); transition:color 0.2s; }
@@ -142,11 +111,9 @@
     <button onclick="showPage('search')">
       <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     </button>
-    <button onclick="showPage('cart')">
-      <div class="cicon">
-        <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <div class="ccount" id="cart-badge" style="display:none">0</div>
-      </div>
+    <button class="cicon" onclick="showPage('cart')" aria-label="Carrito">
+      <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span id="cart-badge" class="ccount" style="display:none">0</span>
     </button>
   </div>
 </header>
@@ -197,18 +164,23 @@
 
 <div id="page-cart" class="page">
   <div class="slabel">Carrito</div>
-  <div class="stitle">Mi selección</div>
+  <div class="stitle">Tu selección</div>
   <div id="cart-list" style="padding:0 20px"></div>
   <div id="cart-empty" class="empty" style="display:none">
     <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-    <p>Tu carrito está vacío</p><small>Añade piezas que te inspiren</small>
+    <p>Tu carrito está vacío</p><small>Añade joyas desde el catálogo</small>
   </div>
-  <div id="cart-footer" style="display:none;padding:20px;border-top:1px solid var(--border)">
-    <div style="display:flex;justify-content:space-between;margin-bottom:14px">
-      <span style="font-size:0.65rem;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase">Total</span>
-      <span id="cart-total" style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold)"></span>
+  <div id="cart-footer" style="display:none;padding:20px;border-top:1px solid var(--border);margin-top:8px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px">
+      <span style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim)">Total</span>
+      <span id="cart-total" style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold)">0,00 €</span>
     </div>
-    <button class="btn1" onclick="window.open('https://babujoyas.com','_blank')">Finalizar compra en web</button>
+    <button id="checkout-btn" class="btn1" onclick="syncCartAndCheckout()">Finalizar compra</button>
+    <div id="checkout-msg" style="display:none;text-align:center;padding-top:12px;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim)">Conectando con la tienda…</div>
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+      <div style="font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Pagos · Envíos</div>
+      <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.9">Tarjeta · Bizum · Transferencia<br/>MRW 24-48h desde 3€ · Gratis desde 50€</div>
+    </div>
   </div>
 </div>
 
@@ -230,11 +202,10 @@
     Contacto <svg class="mchev" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
   </div>
   <div style="padding:28px 20px;text-align:center">
-    <div style="font-size:0.5rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase">Babu Joyas · Córdoba, España · v2.0</div>
+    <div style="font-size:0.5rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase">Babu Joyas · Córdoba, España · v3.0</div>
   </div>
 </div>
 
-<!-- DETAIL PANEL -->
 <div id="detail">
   <div class="dback">
     <button onclick="closeDetail()">
@@ -248,8 +219,7 @@
     <div class="dname" id="d-name"></div>
     <div class="dprice" id="d-price"></div>
     <div class="ddesc" id="d-desc"></div>
-    <button class="btn1" onclick="addToCart()">Añadir al carrito</button>
-    <button class="btn2" onclick="openWeb()">Ver en la tienda web</button>
+    <button class="btn2" onclick="addToCart()">Añadir al carrito</button>
   </div>
 </div>
 
@@ -275,28 +245,24 @@
 <div id="toast"></div>
 
 <script>
-// ── DESREGISTRAR SW ANTIGUO ──
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
 }
 
-// ── CONFIG ──
-const API = 'https://celadon-granita-67b99b.netlify.app/.netlify/functions/products';
+const API = 'https://babu-proxy.ventas-01f.workers.dev';
 const CATS = [
   {l:'Todo', id:0},
-  {l:'Pendientes', id:1260},
-  {l:'Anillos', id:1261},
-  {l:'Pulseras', id:1262},
-  {l:'Gargantillas', id:1263},
-  {l:'Colgantes', id:1265},
-  {l:'Religiosa', id:1259},
-  {l:'Personalizados', id:1249},
+  {l:'Pendientes', id:1260, sub:[1270,1269,1271]},
+  {l:'Anillos', id:1261, sub:[1275,1276,1277]},
+  {l:'Pulseras', id:1262, sub:[1278,1279,1280]},
+  {l:'Gargantillas', id:1263, sub:[1273,1272,1274]},
+  {l:'Colgantes', id:1265, sub:[1282,1281,1283]},
+  {l:'Religiosa', id:1259, sub:[1266,1267,1268]},
+  {l:'Personalizados', id:1249, sub:[1250,1251,1253,1255]},
 ];
 
-// ── STATE ──
 let all = [], favs = JSON.parse(localStorage.getItem('bj_f')||'[]'), cart = JSON.parse(localStorage.getItem('bj_c')||'[]'), cur = null;
 
-// ── NAV ──
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
@@ -307,12 +273,10 @@ function showPage(n) {
   window.scrollTo(0,0);
 }
 
-// ── SKELETONS ──
 function sk(n) {
   return Array(n).fill('<div style="background:var(--dark)"><div class="skel skel-img"></div><div class="skel skel-line"></div><div class="skel skel-line s"></div><div class="skel skel-line p"></div></div>').join('');
 }
 
-// ── CARD ──
 function card(p) {
   const fav = favs.includes(p.id);
   return `<div class="card" onclick="openDetail(${p.id})">
@@ -341,18 +305,22 @@ function renderCats(id, gridId) {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = CATS.map((c,i) =>
-    `<button class="cat ${i===0?'active':''}" onclick="filterCat(this,'${gridId}',${c.id})">${c.l}</button>`
+    `<button class="cat ${i===0?'active':''}" onclick="filterCat(this,'${gridId}',${c.id},${JSON.stringify(c.sub||[])})">${c.l}</button>`
   ).join('');
 }
 
-function filterCat(btn, gridId, catId) {
+function filterCat(btn, gridId, catId, sub) {
   btn.closest('.cats').querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const filtered = catId===0 ? all : all.filter(p => p.categories && p.categories.includes(catId));
-  renderGrid(gridId, filtered.length ? filtered : all);
+  if (catId === 0) { renderGrid(gridId, all); return; }
+  const ids = [catId, ...(sub||[])];
+  const filtered = all.filter(p => {
+    if (p.categories && p.categories.length > 0) return p.categories.some(c => ids.includes(c));
+    return ids.includes(parseInt(p.categoryId));
+  });
+  renderGrid(gridId, filtered.length ? filtered : []);
 }
 
-// ── DETAIL ──
 function openDetail(id) {
   cur = all.find(p=>p.id==id);
   if (!cur) return;
@@ -363,14 +331,29 @@ function openDetail(id) {
   document.getElementById('d-desc').textContent = cur.description||'';
   document.getElementById('detail').classList.add('open');
   document.body.style.overflow='hidden';
+  history.pushState({detail: true}, '');
 }
+
 function closeDetail() {
   document.getElementById('detail').classList.remove('open');
   document.body.style.overflow='';
+  document.getElementById('detail').scrollTop = 0;
 }
-function openWeb() { if(cur) window.open(cur.url||'https://babujoyas.com','_blank'); }
 
-// ── CART ──
+let touchStartX = 0;
+document.getElementById('detail').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+}, {passive: true});
+document.getElementById('detail').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (dx > 80 && touchStartX < 40) closeDetail();
+}, {passive: true});
+
+window.addEventListener('popstate', () => {
+  const detail = document.getElementById('detail');
+  if (detail.classList.contains('open')) closeDetail();
+});
+
 function addToCart() {
   if(!cur) return;
   const ex = cart.find(x=>x.id===cur.id);
@@ -378,16 +361,19 @@ function addToCart() {
   localStorage.setItem('bj_c',JSON.stringify(cart));
   updateBadge(); toast('Añadido al carrito'); closeDetail();
 }
+
 function removeCart(id) {
   cart = cart.filter(x=>x.id!==id);
   localStorage.setItem('bj_c',JSON.stringify(cart));
   updateBadge(); renderCart();
 }
+
 function updateBadge() {
   const n = cart.reduce((s,x)=>s+x.qty,0);
   const b = document.getElementById('cart-badge');
   b.textContent=n; b.style.display=n>0?'flex':'none';
 }
+
 function renderCart() {
   const el=document.getElementById('cart-list'), em=document.getElementById('cart-empty'), ft=document.getElementById('cart-footer');
   if(!cart.length){el.innerHTML='';em.style.display='block';ft.style.display='none';return;}
@@ -407,7 +393,6 @@ function renderCart() {
   document.getElementById('cart-total').textContent = tot.toFixed(2).replace('.',',')+' €';
 }
 
-// ── FAVS ──
 function toggleFav(e,id) {
   e.stopPropagation();
   favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];
@@ -416,13 +401,13 @@ function toggleFav(e,id) {
   renderGrid('home-grid',all.slice(0,6));
   renderGrid('catalog-grid',all);
 }
+
 function renderFavs() {
   const fp=all.filter(p=>favs.includes(p.id));
   renderGrid('fav-grid',fp);
   document.getElementById('fav-empty').style.display=fp.length?'none':'block';
 }
 
-// ── SEARCH ──
 let st;
 function doSearch(q) {
   clearTimeout(st);
@@ -433,14 +418,33 @@ function doSearch(q) {
   },300);
 }
 
-// ── TOAST ──
 function toast(m) {
   const t=document.getElementById('toast');
   t.textContent=m; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-// ── LOAD PRODUCTS ──
+async function syncCartAndCheckout() {
+  const btn = document.getElementById('checkout-btn');
+  const msg = document.getElementById('checkout-msg');
+  btn.disabled = true;
+  btn.textContent = 'Preparando...';
+  msg.style.display = 'block';
+  try {
+    const ids = cart.map(x => x.id).join(',');
+    window.open('https://babujoyas.com/carrito?add=' + ids, '_blank');
+    cart = [];
+    localStorage.setItem('bj_c', '[]');
+    updateBadge();
+  } catch(e) {
+    window.open('https://babujoyas.com', '_blank');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Finalizar compra';
+    msg.style.display = 'none';
+  }
+}
+
 async function loadProducts() {
   document.getElementById('home-grid').innerHTML=sk(6);
   document.getElementById('catalog-grid').innerHTML=sk(12);
@@ -459,7 +463,6 @@ async function loadProducts() {
   }
 }
 
-// ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
   updateBadge();
