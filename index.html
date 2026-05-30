@@ -363,11 +363,10 @@ function addToCart() {
 }
 
 function removeCart(id) {
-  cart = cart.filter(x=>x.id!==id);
+  cart = cart.filter(x=>String(x.id)!==String(id));
   localStorage.setItem('bj_c',JSON.stringify(cart));
   updateBadge(); renderCart();
 }
-
 function updateBadge() {
   const n = cart.reduce((s,x)=>s+x.qty,0);
   const b = document.getElementById('cart-badge');
