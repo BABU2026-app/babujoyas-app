@@ -261,7 +261,7 @@ const CATS = [
   {l:'Personalizados', id:1249, sub:[1250,1251,1253,1255]},
 ];
 
-let all = [], favs = JSON.parse(localStorage.getItem('bj_f')||'[]'), cart = JSON.parse(localStorage.getItem('bj_c')||'[]'), cur = null;
+let all = [], favs = JSON.parse(localStorage.getItem('bj_f')||'[]'), cart = [], cur = null;
 
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
